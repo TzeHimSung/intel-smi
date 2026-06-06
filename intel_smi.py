@@ -284,6 +284,26 @@ def compact_mib(value):
     return f"{number:.0f}MiB"
 
 
+def compact_process_memory(value):
+    number = compact_number(value)
+    if number is None:
+        return "N/A"
+
+    units = ["KiB", "MiB", "GiB", "TiB"]
+    unit_index = 0
+    while abs(number) >= 1024 and unit_index < len(units) - 1:
+        number /= 1024
+        unit_index += 1
+
+    if abs(number) >= 100 or unit_index == 0:
+        text = f"{number:.0f}"
+    elif abs(number) >= 10:
+        text = f"{number:.1f}".rstrip("0").rstrip(".")
+    else:
+        text = f"{number:.2f}".rstrip("0").rstrip(".")
+    return f"{text}{units[unit_index]}"
+
+
 def format_bus(bus):
     if not bus or bus == "N/A":
         return "N/A"
@@ -363,7 +383,7 @@ def render_processes():
             pid = item.get("process_id", item.get("pid", "N/A"))
             name = item.get("process_name", item.get("command", item.get("process", "N/A")))
             mem = item.get("mem_size", item.get("memory", item.get("mem", "N/A")))
-            output.append(row(f"{str(gpu):>5}   {'N/A':<3}  {'N/A':<3} {str(pid):>15} {'C':>6}   {shorten(name, 32):<32} {str(mem):>10}"))
+            output.append(row(f"{str(gpu):>5}   {'N/A':<3}  {'N/A':<3} {str(pid):>15} {'C':>6}   {shorten(name, 32):<32} {compact_process_memory(mem):>10}"))
     output.append(border())
     return output
 
