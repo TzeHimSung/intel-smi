@@ -134,6 +134,10 @@ Sat Jun  6 17:24:12 2026
   Intel XPU-SMI does not expose an NVIDIA-style performance state.
 - The power cap column is shown as `N/A` unless XPU-SMI exposes a stable cap
   value for the device.
+- The process table is only as complete as `xpu-smi ps -j`. Some Level
+  Zero/oneAPI workloads on Arc Pro B50 with the `xe` driver, including Ollama's
+  oneAPI runner, may show GPU offload in the application while `xpu-smi ps -j`
+  reports no process rows.
 - Intel Arc Pro B50 currently appears as `Intel(R) Graphics [0xe212]` in
   `xpu-smi`; `intel-smi` maps that PCI ID to `Intel Arc Pro B50` for readability.
 

@@ -7,6 +7,7 @@ import os
 import re
 import shutil
 import subprocess
+import sys
 import time
 
 
@@ -44,6 +45,17 @@ DETAIL_FIELDS = [
     ("number_of_media_engines", "Media Engines"),
     ("max_hardware_contexts", "HW Contexts"),
 ]
+
+
+SUMMARY_KEYS = {
+    "Average % utilization of all GPU Engines": "GPU-Util",
+    "GPU Power (W)": "Power",
+    "GPU Frequency (MHz)": "Clock",
+    "GPU Core Temperature (Celsius Degree)": "Temp",
+    "GPU Memory Utilization (%)": "Mem%",
+    "GPU Memory Used (MiB)": "Mem Used",
+    "Throttle reason": "Throttle",
+}
 
 
 def run(cmd, timeout=12):
@@ -111,6 +123,13 @@ def split_row(left="", middle="", right="", right_align=False):
 
 def row(text=""):
     return "| " + shorten(text, WIDTH - 4).ljust(WIDTH - 4) + " |"
+
+
+def two_col(left, right):
+    available = WIDTH - 4
+    left_width = available // 2
+    right_width = available - left_width
+    return "| " + shorten(left, left_width).ljust(left_width) + shorten(right, right_width).rjust(right_width) + " |"
 
 
 def kv_row(key, value, key_width=30):
